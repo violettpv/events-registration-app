@@ -1,0 +1,8 @@
+.button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: dodgerblue;
+  font-size: 0.85em;
+  padding: 0;
+}

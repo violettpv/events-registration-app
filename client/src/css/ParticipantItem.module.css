@@ -1,0 +1,13 @@
+.container {
+  margin: 1em;
+  width: 20%;
+  border: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.container h4 {
+  margin: 0 0 0.8em 0;
+}

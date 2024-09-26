@@ -1,0 +1,53 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.container h2 {
+  margin: 0 0 0.6em 0;
+}
+.container h3 {
+  margin: 0.6em 0;
+}
+
+.blockOne {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin: 1em 0;
+}
+.datetime {
+  font-size: 1.1em;
+}
+
+.blockTwo {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  margin: 0.5em 0;
+}
+.organizer {
+  font-size: 1.2em;
+}
+.description {
+  margin: 1em 0;
+  text-wrap: wrap;
+  font-size: 1.1em;
+}
+
+.blockThree {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  /* margin: 1em 0; */
+}
+.searchBar {
+  margin: 0.7em 0;
+}
+.participants {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
