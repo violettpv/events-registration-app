@@ -1,10 +1,10 @@
 import styles from '@css/ParticipantItem.module.css';
 
-export default function ParticipantItem() {
+export default function ParticipantItem({ user }) {
   return (
     <div className={styles.container}>
-      <h4>John Doe</h4>
-      <div>john.doe@gmail.com</div>
+      <h4>{user.fullname}</h4>
+      <div>{user.email}</div>
     </div>
   );
 }

@@ -40,14 +40,22 @@
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  /* margin: 1em 0; */
 }
+
 .searchBar {
   margin: 0.7em 0;
 }
+
+.searchInput {
+  width: 25%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .participants {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   flex-direction: row;
   flex-wrap: wrap;
 }

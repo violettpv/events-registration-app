@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "fullname": "John Doe",
+    "email": "johndoe@gmail.com"
+  },
+  {
+    "id": 2,
+    "fullname": "Jane Smith",
+    "email": "janesmith@gmail.com"
+  },
+  {
+    "id": 3,
+    "fullname": "Alice Johnson",
+    "email": "aljohnson@gmail.com"
+  },
+  {
+    "id": 4,
+    "fullname": "Bob Brown",
+    "email": "bobby@gmail.com"
+  },
+  {
+    "id": 5,
+    "fullname": "Charlie Davis",
+    "email": "charchardavis@gmail.com"
+  },
+  {
+    "id": 6,
+    "fullname": "David Wilson",
+    "email": "daddymilson@gmail.com"
+  },
+  {
+    "id": 7,
+    "fullname": "Eve Lee",
+    "email": "eveeelee@gmail.com"
+  },
+  {
+    "id": 8,
+    "fullname": "Frank White",
+    "email": "mrwhite@gmail.com"
+  },
+  {
+    "id": 9,
+    "fullname": "Grace Martinez",
+    "email": "martinez.grace@gmail.com"
+  },
+  {
+    "id": 10,
+    "fullname": "Henry Young",
+    "email": "hhhyoung1@gmail.com"
+  }
+]

@@ -6,6 +6,28 @@
   justify-content: space-between;
 }
 
+.sortControls {
+  display: flex;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.sortControls label {
+  margin-right: 0.5em;
+}
+
+.sortControls select {
+  padding: 0.3em;
+}
+
+.sortingButton {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 0.5em 0.8em;
+  margin: 0 0.7em;
+  cursor: pointer;
+}
+
 .title h2 {
   margin: 0;
 }
