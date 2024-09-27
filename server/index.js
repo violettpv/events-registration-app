@@ -16,9 +16,6 @@ app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/', (req, res) => {
-  res.send('Welcome to the Event API');
-});
 app.use('/api/events', require('./routes/eventRoute'));
 
 // app.use(express.static(path.join(__dirname, '../client')));
