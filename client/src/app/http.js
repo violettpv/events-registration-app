@@ -65,9 +65,11 @@ const registerParticipant = async (id, participant) => {
   }
 };
 
-const getEventsAPI = async () => {
+const getEventsAPI = async (page = 1, itemsPerPage = 8) => {
   try {
-    const response = await axios.get(`${API_URL}/recommendations/all`);
+    const response = await axios.get(
+      `${API_URL}/recommendations/all?page=${page}&limit=${itemsPerPage}`
+    );
     return response.data;
   } catch (error) {
     if (error.response) {

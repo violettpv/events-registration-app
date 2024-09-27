@@ -4,14 +4,13 @@ import { useState, useEffect } from 'react';
 import { getAllEvents } from '@app/http';
 import { useNavigate } from 'react-router-dom';
 
-const itemsPerPage = 12;
-
 export default function Events() {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('eventDate');
   const [sortOrder, setSortOrder] = useState('asc');
+  const itemsPerPage = 12;
 
   useEffect(() => {
     async function fetchEvents() {

@@ -3,16 +3,15 @@ import { getEventsAPI } from '@app/http';
 import { useNavigate } from 'react-router-dom';
 import styles from '@css/Events.module.css';
 import EventItem from './EventItem';
-
-const itemsPerPage = 12;
+import Loader from './UI/Loader';
 
 export default function Recommendations() {
   const navigate = useNavigate();
   const [eventsAPI, setEventAPI] = useState([]);
 
   const [page, setPage] = useState(1);
-  const [sortCriteria, setSortCriteria] = useState('eventDate');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [loading, setLoading] = useState(false);
+  const itemsPerPage = 8;
 
   useEffect(() => {
     async function fetchEventsAPI() {
@@ -27,42 +26,29 @@ export default function Recommendations() {
     fetchEventsAPI();
   }, []);
 
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  useEffect(() => {
+    setTimeout(async () => {
+      const response = await getEventsAPI(page, itemsPerPage);
+      setEventAPI((prev) => {
+        return [...prev, ...response];
+      });
+      setLoading(false);
+    }, 1500);
+  }, [page]);
 
-  const sortedEvents = [...eventsAPI].sort((a, b) => {
-    const valueA = a[sortCriteria];
-    const valueB = b[sortCriteria];
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    if (sortCriteria === 'eventDate') {
-      const dateA = new Date(a.datetime);
-      const dateB = new Date(b.datetime);
-      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+  const handleScroll = async () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      document.documentElement.scrollHeight
+    ) {
+      setLoading(true);
+      setPage((prev) => prev + 1);
     }
-
-    // for string comparisons
-    if (valueA < valueB) {
-      return sortOrder === 'asc' ? -1 : 1;
-    }
-    if (valueA > valueB) {
-      return sortOrder === 'asc' ? 1 : -1;
-    }
-    return 0; // if valueA === valueB, keep a relative order
-  });
-
-  const currentEvents = sortedEvents.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(eventsAPI.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setPage(pageNumber);
-  };
-
-  const handleSortChange = (e) => {
-    setSortCriteria(e.target.value);
-  };
-
-  const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
   };
 
   const handleGoBack = () => {
@@ -81,37 +67,13 @@ export default function Recommendations() {
         <h2>Recommendations from our partners</h2>
       </div>
 
-      <div className={styles.sortControls}>
-        <label>Sort by:</label>
-        <select value={sortCriteria} onChange={handleSortChange}>
-          <option value="eventDate">Date</option>
-          <option value="title">Title</option>
-          <option value="organizer">Organizer</option>
-        </select>
-
-        <button className={styles.sortingButton} onClick={toggleSortOrder}>
-          {sortOrder === 'asc' ? 'Ascending' : 'Descending'}
-        </button>
-      </div>
-
       <div className={styles.events}>
-        {currentEvents.map((event) => (
+        {eventsAPI.map((event) => (
           <EventItem key={event._id} event={event} />
         ))}
       </div>
 
-      <div className={styles.pagination}>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            className={`${styles.pageButton} ${page === index + 1 ? styles.active : ''}`}
-            onClick={() => handlePageChange(index + 1)}
-            disabled={page === index + 1}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+      {loading && <Loader />}
     </div>
   );
 }

@@ -82,8 +82,8 @@ const registerParticipant = asyncHandler(async (req, res) => {
 // @route   GET /api/events
 // @access  Public
 const getEvents = asyncHandler(async (req, res) => {
-  // const events = await Event.find({});
   const events = await Event.find({ isExternal: undefined });
+  // const events = await Event.find({});
 
   if (events) {
     res.status(200).json(events);
@@ -132,7 +132,11 @@ const getParticipants = asyncHandler(async (req, res) => {
 // @route   GET /api/recommendations/all (from third-party API)
 // @access  Public
 const getEventsAPI = asyncHandler(async (req, res) => {
-  const events = await Event.find({ isExternal: true });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 12;
+  const offset = (page - 1) * limit;
+
+  const events = await Event.find({ isExternal: true }).skip(offset).limit(limit);
 
   if (events) {
     res.status(200).json(events);
