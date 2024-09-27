@@ -1,37 +1,73 @@
 import styles from '@css/EventDetailPage.module.css';
 import ParticipantItem from './ParticipantItem';
-import DUMMY_USERS from '../../users.json';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getEvent, getEventParticipants } from '@app/http';
+import { formatDate } from '@utils';
+import RegistrationChart from './UI/RegistrationChart';
 
 export default function EventDetailPage() {
+  const { eventId } = useParams();
+  const navigate = useNavigate();
+  const [event, setEvent] = useState({});
+  const [participants, setParticipants] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    async function fetchEventDetails() {
+      try {
+        const event = await getEvent(eventId);
+        setEvent(event);
+        const participants = await getEventParticipants(eventId);
+        setParticipants(participants);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchEventDetails();
+  }, [eventId]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredUsers = DUMMY_USERS.filter(
-    (user) =>
-      user.fullname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleButtonClick = () => {
+    navigate('/');
+  };
+
+  const filteredParticipants = participants.filter(
+    (participant) =>
+      participant.fullname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      participant.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className={styles.container}>
       <div className={styles.blockOne}>
-        <h2>Title</h2>
-        <div className={styles.datetime}>Date and Time</div>
+        <button className={styles.goBackButton} onClick={handleButtonClick}>
+          All events
+        </button>
+        <h2>{event.title}</h2>
+        <div className={styles.datetime}>{formatDate(event.datetime)}</div>
       </div>
+
       <div className={styles.blockTwo}>
-        <div className={styles.organizer}>By Organizer</div>
-        <div className={styles.description}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis doloremque neque
-          quia ipsam! Numquam at saepe similique id quaerat beatae amet eos totam eum
-          cupiditate? Distinctio minus saepe omnis maxime.
+        <div className={styles.organizer}>By {event.organizer}</div>
+        <div className={styles.description}>{event.description}</div>
+      </div>
+
+      <div className={styles.blockThree}>
+        <h3>Registrations over the last 7 days</h3>
+        <div className={styles.chartBlock}>
+          <div className={styles.chartWidth}>
+            <RegistrationChart participants={participants} />
+          </div>
         </div>
       </div>
-      <div className={styles.blockThree}>
-        <h3>Title participants</h3>
+
+      <div className={styles.blockFour}>
+        <h3>&quot;{event.title}&quot; participants</h3>
 
         <div className={styles.searchBar}>
           <input
@@ -44,18 +80,10 @@ export default function EventDetailPage() {
         </div>
 
         <div className={styles.participants}>
-          {filteredUsers.map((user) => (
-            <ParticipantItem key={user.id} user={user} />
+          {filteredParticipants.map((participant) => (
+            <ParticipantItem key={participant._id} participant={participant} />
           ))}
         </div>
-
-        {/* <div className={styles.searchBar}>SEARCH BAR</div>
-
-        <div className={styles.participants}>
-          {DUMMY_USERS.map((user) => (
-            <ParticipantItem key={user.id} user={user} />
-          ))}
-        </div> */}
       </div>
     </div>
   );

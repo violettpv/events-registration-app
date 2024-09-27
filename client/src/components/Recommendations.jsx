@@ -1,35 +1,39 @@
+import { useEffect, useState } from 'react';
+import { getEventsAPI, createEvent } from '@app/http';
+import { useNavigate } from 'react-router-dom';
 import styles from '@css/Events.module.css';
 import EventItem from './EventItem';
-import { useState, useEffect } from 'react';
-import { getAllEvents } from '@app/http';
-import { useNavigate } from 'react-router-dom';
+import { normalizeEvents } from '@utils';
 
 const itemsPerPage = 12;
 
-export default function Events() {
+export default function Recommendations() {
   const navigate = useNavigate();
-  const [events, setEvents] = useState([]);
+  const [eventsAPI, setEventAPI] = useState([]);
+
   const [page, setPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('eventDate');
   const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
-    async function fetchEvents() {
+    async function fetchEventsAPI() {
       try {
-        const events = await getAllEvents();
-        setEvents(events);
+        const events = await getEventsAPI();
+        const normalizedEvents = normalizeEvents(events._embedded.events);
+        console.log('normalizedEvents before bulk', normalizedEvents);
+        setEventAPI(normalizedEvents);
       } catch (error) {
         console.log(error);
       }
     }
 
-    fetchEvents();
+    fetchEventsAPI();
   }, []);
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const sortedEvents = [...events].sort((a, b) => {
+  const sortedEvents = [...eventsAPI].sort((a, b) => {
     const valueA = a[sortCriteria];
     const valueB = b[sortCriteria];
 
@@ -50,7 +54,7 @@ export default function Events() {
   });
 
   const currentEvents = sortedEvents.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(events.length / itemsPerPage);
+  const totalPages = Math.ceil(eventsAPI.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setPage(pageNumber);
@@ -64,21 +68,20 @@ export default function Events() {
     setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
   };
 
-  const handleOtherEvents = () => {
-    navigate('/recommendations');
+  const handleGoBack = () => {
+    navigate('/');
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.title}>
-        <h2>Events</h2>
+      <div className={styles.apiEvents}>
+        <button className={styles.blueButton} onClick={handleGoBack}>
+          Main page
+        </button>
       </div>
 
-      <div className={styles.apiEvents}>
-        <div>Other recommendations from our partners</div>
-        <button className={styles.blueButton} onClick={handleOtherEvents}>
-          View all
-        </button>
+      <div className={styles.title}>
+        <h2>Recommendations from our partners</h2>
       </div>
 
       <div className={styles.sortControls}>
@@ -96,7 +99,7 @@ export default function Events() {
 
       <div className={styles.events}>
         {currentEvents.map((event) => (
-          <EventItem key={event._id} event={event} />
+          <EventItem key={event.id} event={event} />
         ))}
       </div>
 

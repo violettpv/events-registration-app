@@ -1,23 +1,39 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from '@css/RegisterForm.module.css';
+import { getEvent, registerParticipant } from '@app/http';
 
 export default function RegisterForm() {
   const { eventId } = useParams();
+  const navigate = useNavigate();
+  const [event, setEvent] = useState({});
 
   const [formData, setFormData] = useState({
-    fullName: '',
+    fullname: '',
     email: '',
     dateOfBirth: '',
-    heardFrom: '',
+    heardAbout: '',
   });
 
   const [formErrors, setFormErrors] = useState({
-    fullName: '',
+    fullname: '',
     email: '',
     dateOfBirth: '',
-    heardFrom: '',
+    heardAbout: '',
   });
+
+  useEffect(() => {
+    async function fetchEventDetails() {
+      try {
+        const event = await getEvent(eventId);
+        setEvent(event);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchEventDetails();
+  }, [eventId]);
 
   const handleChange = (e) => {
     setFormData({
@@ -30,11 +46,11 @@ export default function RegisterForm() {
     let errors = {};
     let isValid = true;
 
-    const fullNameRegex = /^[A-Za-z]+ [A-Za-z]+$/;
+    const fullnameRegex = /^[A-Za-z]+ [A-Za-z]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!fullNameRegex.test(formData.fullName)) {
-      errors.fullName = 'Full name must be in "First Last" format.';
+    if (!fullnameRegex.test(formData.fullname)) {
+      errors.fullname = 'Full name must be in "First Last" format.';
       isValid = false;
     }
     if (!emailRegex.test(formData.email)) {
@@ -45,8 +61,8 @@ export default function RegisterForm() {
       errors.dateOfBirth = 'Date of birth is required.';
       isValid = false;
     }
-    if (!formData.heardFrom) {
-      errors.heardFrom = 'Please select where you heard about this event.';
+    if (!formData.heardAbout) {
+      errors.heardAbout = 'Please select where you heard about this event.';
       isValid = false;
     }
 
@@ -54,13 +70,21 @@ export default function RegisterForm() {
     return isValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validateForm()) {
-      console.log('Form data submitted:', formData);
+      try {
+        await registerParticipant(eventId, formData);
+        alert('Your registration was successful.');
+        navigate(`/${eventId}`);
+      } catch (error) {
+        console.log(error);
+        alert('Failed to register participant.');
+      }
     } else {
-      console.log('Form data validation failed:', formErrors);
+      // console.log('Form data validation failed:', formErrors);
+      alert('Please correct the errors in the form.');
     }
   };
 
@@ -68,25 +92,22 @@ export default function RegisterForm() {
     <div className={styles.container}>
       <div className={styles.formContainer}>
         <h3>Event Registration</h3>
-        <h3>{eventId} TITLE!</h3>
+        <h3>{event.title}</h3>
         <form onSubmit={handleSubmit}>
-          {/* Full Name */}
           <div className={styles.formGroup}>
             <label>Full name</label>
             <input
               type="text"
-              name="fullName"
-              value={formData.fullName}
+              name="fullname"
+              value={formData.fullname}
               onChange={handleChange}
-              className={formErrors.fullName ? styles.errorInput : ''}
+              className={formErrors.fullname ? styles.errorInput : ''}
               required
             />
-            {formErrors.fullName && (
-              <p className={styles.errorText}>{formErrors.fullName}</p>
+            {formErrors.fullname && (
+              <p className={styles.errorText}>{formErrors.fullname}</p>
             )}
           </div>
-
-          {/* Email */}
           <div className={styles.formGroup}>
             <label>Email</label>
             <input
@@ -99,8 +120,6 @@ export default function RegisterForm() {
             />
             {formErrors.email && <p className={styles.errorText}>{formErrors.email}</p>}
           </div>
-
-          {/* Date of Birth */}
           <div className={styles.formGroup}>
             <label>Date of birth</label>
             <input
@@ -115,17 +134,15 @@ export default function RegisterForm() {
               <p className={styles.errorText}>{formErrors.dateOfBirth}</p>
             )}
           </div>
-
-          {/* Heard From */}
           <div className={styles.formGroup}>
             <label>Where did you hear about this event?</label>
             <div className={styles.checkboxAnswers}>
               <label>
                 <input
                   type="radio"
-                  name="heardFrom"
+                  name="heardAbout"
                   value="social_media"
-                  checked={formData.heardFrom === 'social_media'}
+                  checked={formData.heardAbout === 'social_media'}
                   onChange={handleChange}
                 />
                 <span>Social Media</span>
@@ -133,9 +150,9 @@ export default function RegisterForm() {
               <label>
                 <input
                   type="radio"
-                  name="heardFrom"
+                  name="heardAbout"
                   value="friends"
-                  checked={formData.heardFrom === 'friends'}
+                  checked={formData.heardAbout === 'friends'}
                   onChange={handleChange}
                 />
                 <span>Friends</span>
@@ -143,19 +160,18 @@ export default function RegisterForm() {
               <label>
                 <input
                   type="radio"
-                  name="heardFrom"
+                  name="heardAbout"
                   value="found_myself"
-                  checked={formData.heardFrom === 'found_myself'}
+                  checked={formData.heardAbout === 'found_myself'}
                   onChange={handleChange}
                 />
                 <span>Found Myself</span>
               </label>
             </div>
-            {formErrors.heardFrom && (
-              <p className={styles.errorText}>{formErrors.heardFrom}</p>
+            {formErrors.heardAbout && (
+              <p className={styles.errorText}>{formErrors.heardAbout}</p>
             )}
           </div>
-
           <button className={styles.submitButton} type="submit">
             Submit
           </button>

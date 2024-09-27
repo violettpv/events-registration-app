@@ -4,6 +4,7 @@ import Events from '@components/Events';
 import EventDetailPage from '@components/EventDetailPage';
 import ErrorPage from '@components/UI/ErrorPage';
 import RegisterForm from '@components/UI/RegisterForm';
+import Recommendations from '@components/Recommendations';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: ':eventId/register',
         element: <RegisterForm />,
+      },
+      {
+        path: 'recommendations',
+        element: <Recommendations />,
       },
     ],
   },

@@ -1,10 +1,19 @@
 import styles from '@css/EventItem.module.css';
 import Button from './UI/Button';
-import { redirect, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@utils';
 
 export default function EventItem({ event }) {
-  const { eventId } = useParams();
+  const navigate = useNavigate();
+  const eventId = event._id;
+
+  const handleRegister = () => {
+    navigate(`${eventId}/register`);
+  };
+
+  const handleView = () => {
+    navigate(`${eventId}`);
+  };
 
   return (
     <div className={styles.container}>
@@ -15,15 +24,8 @@ export default function EventItem({ event }) {
         <p>{event.description}</p>
       </div>
       <div className={styles.buttons}>
-        <Button
-          onClick={() => {
-            console.log('Registering for event', eventId);
-            redirect(`${eventId}/register`);
-          }}
-        >
-          Register
-        </Button>
-        <Button>View</Button>
+        <Button onClick={handleRegister}>Register</Button>
+        <Button onClick={handleView}>View</Button>
       </div>
     </div>
   );

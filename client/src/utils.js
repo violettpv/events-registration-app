@@ -25,3 +25,23 @@ export function formatDate(dateString) {
 
   return `${month} ${day}, ${year}, ${hour}:${minutes}`;
 }
+
+export const normalizeEvents = (events) => {
+  if (!Array.isArray(events)) {
+    return [];
+  }
+
+  return events
+    .map((event) => {
+      if (event) {
+        return {
+          title: event.name || 'Unknown Title',
+          organizer: event.promoter?.name || 'Unknown Organizer',
+          datetime: event.dates?.start.dateTime || 'Unknown Date',
+          description: event.url || 'Unknown',
+        };
+      }
+      return null;
+    })
+    .filter((event) => event !== null);
+};

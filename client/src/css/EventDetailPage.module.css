@@ -11,6 +11,19 @@
   margin: 0.6em 0;
 }
 
+.goBackButton {
+  margin-bottom: 1em;
+  background-color: dodgerblue;
+  color: white;
+  font-weight: bold;
+  font-size: 0.95em;
+  padding: 0.6em 1em;
+  border: none;
+  border-radius: 10px;
+  width: 10%;
+  cursor: pointer;
+}
+
 .blockOne {
   display: flex;
   justify-content: space-between;
@@ -37,6 +50,19 @@
 }
 
 .blockThree {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.chartBlock {
+  display: flex;
+  justify-content: center;
+}
+.chartWidth {
+  width: 60%;
+}
+
+.blockFour {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
