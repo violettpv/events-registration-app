@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/events', require('./routes/eventRoute'));
 
-app.use(express.static(path.join(__dirname, '../client')));
+// app.use(express.static(path.join(__dirname, '../client')));
 
 app.use(errorHandler);
 
