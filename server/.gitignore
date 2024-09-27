@@ -2,3 +2,5 @@
 /node_modules
 /.vscode
 /packages
+
+versel.json
