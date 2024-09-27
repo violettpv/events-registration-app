@@ -1,18 +1,29 @@
 import styles from '@css/EventItem.module.css';
 import Button from './UI/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { formatDate } from '@utils';
 
 export default function EventItem({ event }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const eventId = event._id;
 
+  const isRecommendationsPage = location.pathname.includes('recommendations');
+
   const handleRegister = () => {
-    navigate(`${eventId}/register`);
+    if (isRecommendationsPage) {
+      navigate(`/${eventId}/register`);
+    } else {
+      navigate(`/${eventId}/register`);
+    }
   };
 
   const handleView = () => {
-    navigate(`${eventId}`);
+    if (isRecommendationsPage) {
+      navigate(`/${eventId}`);
+    } else {
+      navigate(`/${eventId}`);
+    }
   };
 
   return (

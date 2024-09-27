@@ -25,3 +25,7 @@ app.use(errorHandler);
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+const fetchAndStoreEvents = require('./apiEvents');
+// fetchAndStoreEvents();
+setInterval(fetchAndStoreEvents, 3600000); // 1 hour

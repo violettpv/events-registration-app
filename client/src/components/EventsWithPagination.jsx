@@ -1,36 +1,35 @@
-import { useEffect, useState } from 'react';
-import { getEventsAPI } from '@app/http';
-import { useNavigate } from 'react-router-dom';
 import styles from '@css/Events.module.css';
 import EventItem from './EventItem';
+import { useState, useEffect } from 'react';
+import { getAllEvents } from '@app/http';
+import { useNavigate } from 'react-router-dom';
 
 const itemsPerPage = 12;
 
-export default function Recommendations() {
+export default function Events() {
   const navigate = useNavigate();
-  const [eventsAPI, setEventAPI] = useState([]);
-
+  const [events, setEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('eventDate');
   const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
-    async function fetchEventsAPI() {
+    async function fetchEvents() {
       try {
-        const events = await getEventsAPI();
-        setEventAPI(events);
+        const events = await getAllEvents();
+        setEvents(events);
       } catch (error) {
         console.log(error);
       }
     }
 
-    fetchEventsAPI();
+    fetchEvents();
   }, []);
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const sortedEvents = [...eventsAPI].sort((a, b) => {
+  const sortedEvents = [...events].sort((a, b) => {
     const valueA = a[sortCriteria];
     const valueB = b[sortCriteria];
 
@@ -51,7 +50,7 @@ export default function Recommendations() {
   });
 
   const currentEvents = sortedEvents.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(eventsAPI.length / itemsPerPage);
+  const totalPages = Math.ceil(events.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setPage(pageNumber);
@@ -65,20 +64,21 @@ export default function Recommendations() {
     setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
   };
 
-  const handleGoBack = () => {
-    navigate('/');
+  const handleOtherEvents = () => {
+    navigate('/recommendations');
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.apiEvents}>
-        <button className={styles.blueButton} onClick={handleGoBack}>
-          Main page
-        </button>
+      <div className={styles.title}>
+        <h2>Events</h2>
       </div>
 
-      <div className={styles.title}>
-        <h2>Recommendations from our partners</h2>
+      <div className={styles.apiEvents}>
+        <div>Other recommendations from our partners</div>
+        <button className={styles.blueButton} onClick={handleOtherEvents}>
+          View all
+        </button>
       </div>
 
       <div className={styles.sortControls}>

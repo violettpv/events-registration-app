@@ -18,7 +18,8 @@ const createEvent = asyncHandler(async (req, res) => {
     description,
     datetime,
     organizer,
-    isExternal: true, // for third-party API
+    // isExternal: true,
+    // for third-party API
   });
 
   if (event) {
@@ -81,7 +82,8 @@ const registerParticipant = asyncHandler(async (req, res) => {
 // @route   GET /api/events
 // @access  Public
 const getEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find({});
+  // const events = await Event.find({});
+  const events = await Event.find({ isExternal: undefined });
 
   if (events) {
     res.status(200).json(events);
@@ -126,10 +128,25 @@ const getParticipants = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get all events
+// @route   GET /api/recommendations/all (from third-party API)
+// @access  Public
+const getEventsAPI = asyncHandler(async (req, res) => {
+  const events = await Event.find({ isExternal: true });
+
+  if (events) {
+    res.status(200).json(events);
+  } else {
+    res.status(404);
+    throw new Error('Events not found');
+  }
+});
+
 module.exports = {
   getEvents,
   getEvent,
   createEvent,
   registerParticipant,
   getParticipants,
+  getEventsAPI,
 };
