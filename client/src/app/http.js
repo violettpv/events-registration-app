@@ -1,5 +1,6 @@
 import axios from 'axios';
 const API_URL = `https://events-registration-app-production-9898.up.railway.app/api/events`;
+// const API_URL = `http://localhost:5000/api/events`;
 
 const getAllEvents = async () => {
   try {

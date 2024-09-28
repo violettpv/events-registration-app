@@ -3,10 +3,12 @@ import EventItem from './EventItem';
 import { useState, useEffect } from 'react';
 import { getAllEvents } from '@app/http';
 import { useNavigate } from 'react-router-dom';
+import Loader from './UI/Loader';
 
 export default function Events() {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('eventDate');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -15,10 +17,13 @@ export default function Events() {
   useEffect(() => {
     async function fetchEvents() {
       try {
+        setLoading(true);
         const events = await getAllEvents();
         setEvents(events);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -93,24 +98,32 @@ export default function Events() {
         </button>
       </div>
 
-      <div className={styles.events}>
-        {currentEvents.map((event) => (
-          <EventItem key={event._id} event={event} />
-        ))}
-      </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className={styles.eventsBlock}>
+          <div className={styles.events}>
+            {currentEvents.map((event) => (
+              <EventItem key={event._id} event={event} />
+            ))}
+          </div>
 
-      <div className={styles.pagination}>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            className={`${styles.pageButton} ${page === index + 1 ? styles.active : ''}`}
-            onClick={() => handlePageChange(index + 1)}
-            disabled={page === index + 1}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+          <div className={styles.pagination}>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                className={`${styles.pageButton} ${
+                  page === index + 1 ? styles.active : ''
+                }`}
+                onClick={() => handlePageChange(index + 1)}
+                disabled={page === index + 1}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
